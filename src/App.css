@@ -1,0 +1,16 @@
+.dg.dc{
+ position: relative;
+}
+
+.dg.a{
+  position: absolute;
+  right: 0px;
+  top:60px;
+}
+
+#root > div > div:last-child{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+

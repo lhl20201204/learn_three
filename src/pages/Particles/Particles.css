@@ -1,0 +1,16 @@
+
+    #ParticlesContainer{
+        width: 700px;
+        height: 700px;
+        position: relative;
+    }
+    
+    #ParticlesContainer H1{
+        display: inline-block;
+        position: absolute;
+        left: 50%;
+        top:50%;
+        transform: translate(-50%,-50%);
+    }
+    
+    

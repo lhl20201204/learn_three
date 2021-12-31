@@ -1,0 +1,16 @@
+.parent{
+   display: flex;
+   width: 100%;
+  flex-wrap: wrap;
+   align-items:center;
+   justify-content: center;
+}
+.child{
+    flex: 1;
+    padding: 0 30px;
+    border: 1px solid yellow;
+    text-align: center;
+}
+.activate{
+    color: red;
+}

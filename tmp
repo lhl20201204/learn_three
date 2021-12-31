@@ -1,0 +1,21 @@
+ const doorColorTextTure = "./textures/door/color.jpg"
+     const doorAlphaTextTure = "/textures/door/alpha.png"
+     const doorAmbientOccluTextTure = "/textures/door/ambientOcclusion.jpg"
+     const doorHeightTextTure = "/textures/door/height.jpg"
+     const doorNormalTextTure = "/textures/door/normal.jpg"
+     const doorMetalnessTextTure = "/textures/door/metalness.jpg"
+     const doorRoughnessTexture = "/textures/door/roughness.jpg"
+     
+     let resArray={
+         texture:[
+             EARTH,
+             doorColorTextTure,
+             doorAlphaTextTure,
+             doorAmbientOccluTextTure,
+             doorHeightTextTure,
+             doorNormalTextTure,
+             doorMetalnessTextTure,
+             doorRoughnessTexture,
+        ],
+         model:[PLANE]
+     }
