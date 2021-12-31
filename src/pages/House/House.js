@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
     import * as THREE from 'three'
-  import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+ // import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
   import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
   import {FontLoader} from "three/examples/jsm/loaders/FontLoader.js";
   import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';

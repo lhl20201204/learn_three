@@ -12,6 +12,7 @@ import Raycaster from '../pages/Raycaster/Raycaster';
 import Physics from '../pages/Physics/Physics';
 import Module from '../pages/Module/Module';
 import Render from '../pages/Render/Render';
+import Shader from '../pages/Shader/Shader';
 export const arr =[
     {to:"/",content:"首页",componment:Hello},
     {to:"/map",content:"地图",componment:ThreeMap},
@@ -26,6 +27,6 @@ export const arr =[
     {to:"/Raycaster",content:"Raycaster",componment:Raycaster},
     {to:"/Physics",content:"Physics",componment:Physics},
     {to:"/Module",content:"Module",componment:Module},
-
     {to:"/Render",content:"Render",componment:Render},
+    {to:"/Shader",content:"Shader",componment:Shader},
 ];
