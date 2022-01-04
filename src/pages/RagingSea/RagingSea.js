@@ -3,23 +3,18 @@ import React, { Component } from 'react'
     import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
     import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
     import {FontLoader} from "three/examples/jsm/loaders/FontLoader.js";
-    import "./Shader.css"
-    // import testVertexShader from './shaders/test/vertex.glsl'
-    // import testFragmentShader from './shaders/test/fragment.glsl'
+    import "./RagingSea.css"
+    import testVertexShader from './shaders/vertex.glsl'
+    import testFragmentShader from './shaders/fragment.glsl'
     import * as dat from 'dat.gui'
-    import testVertexShader2 from './shaders/test/vertex2.glsl'
-    import testFragmentShader2 from './shaders/test/fragment2.glsl'
-    export default class Shader extends Component {
+    export default class RagingSea extends Component {
     initThree(){
      let scene 
      let camera
      let renderer
      let group
-     let light
-     const MAP = './Earth.png'
-     const FLAG = './textures/textures/flag-french.jpg'
      let resArray={
-        texture:[MAP,FLAG],
+        texture:[],
         gltf:[],
         font:[],
     }
@@ -30,13 +25,13 @@ import React, { Component } from 'react'
      {
          totalLoadedResNum+=resArray[attr].length
      }
-    let container = document.getElementById("ShaderContainer")
+    let container = document.getElementById("RagingSeaContainer")
      let width = container.clientWidth
      let height = container.clientHeight
      let leave =false
      let controls
      let material
-     const clock = new THREE.Clock()
+     const gui = new dat.GUI()
      function leavePage(params) {
         leave = true
         let gContainer= document.querySelector(".dg.a")
@@ -46,13 +41,13 @@ import React, { Component } from 'react'
          gContainerParent.removeChild(gContainer)
        }    
      }
+     const clock = new THREE.Clock()
      function render(params) {
-          const t = clock.getElapsedTime()
-          if(material)
-          { 
-              material.uniforms.uTime.value = t
-          }
-         
+         const t = clock.getElapsedTime()
+         if(material)
+         {
+           material.uniforms.uTime.value = t  
+         }  
          renderer.render(scene,camera)
      }
     
@@ -109,59 +104,78 @@ import React, { Component } from 'react'
        }
 
        function addComponents(resource) {
-        const geometry = new THREE.PlaneBufferGeometry(1,1,32,32)
-       const count = geometry.attributes.position.count
-       const randoms = new Float32Array(count)
-       for(let i=0;i<count;i++)
-       {
-          randoms[i] = Math.random()
-
-       }
-
-
-       geometry.setAttribute('aRandom',new THREE.BufferAttribute(randoms,1))
-
-
-        const gui = new dat.GUI()
-         material = new THREE.ShaderMaterial({
-            vertexShader:testVertexShader2,
-            fragmentShader:testFragmentShader2,
-            side:THREE.DoubleSide,
-            uniforms:{
-                uFrequency:{
-                    type:  'vec2',
-                    value: new THREE.Vector2(10,5),
-                },
-                uTime: {
-                    value: 0
-                },
-                uColor:{
-                    value: new THREE.Color('orange')
-                },
-                uTexture:{
-                    value:resource[FLAG]
+           const object  = {
+               depthColor:'#186691',
+               surfaceColor: '#9bd8ff'
+           }
+            material =new THREE.ShaderMaterial({
+                vertexShader:testVertexShader,
+                fragmentShader:testFragmentShader,
+                side:THREE.DoubleSide,
+                uniforms:{
+                    uTime:{
+                        value:0
+                    },
+                    uBigWavesElevation:{
+                        value:0.2,
+                    },
+                    uBigWavesFrequency: {
+                        type:  'vec2',
+                        value: new THREE.Vector2(4,1.5),
+                    },
+                    uBigWavesSpeed:{
+                        value:0.75
+                    },
+                    uSmallWavesElevation:{
+                        value:0.15,
+                    },
+                    uSmallWavesFrequency: {
+                        value: 3,
+                    },
+                    uSmallWavesSpeed:{
+                        value:0.2
+                    },
+                    uSmallWavesIterations:{
+                        value:0.4
+                    },
+                    uDepthColor:{
+                        value:new THREE.Color(object.depthColor) 
+                    },
+                    uSurfaceColor:{
+                        value:new THREE.Color(object.surfaceColor) 
+                    },
+                    uColorOffset:{
+                        value:0.08
+                    },
+                    uColorMultiplier:{
+                        value:5
+                    }
                 }
-            }
-
-        })
-        gui.add(material.uniforms.uFrequency.value, 'x' ).min(0).max(20).step(0.01).name('frequencyX')
-        gui.add(material.uniforms.uFrequency.value, 'y' ).min(0).max(20).step(0.01).name('frequencyY')
-        const material2 = new THREE.MeshStandardMaterial({
-            roughness:0.5,
-            side:THREE.DoubleSide,
-            map: resource[MAP]
-        })
-
-        const plane = new THREE.Mesh(geometry,true?material:material2)
-        // plane.rotation.x = -Math.PI/ 2
-         plane.scale.y = 2 /3;
-        scene.add(plane);
-
-       
-
-  
+            })
+            const mesh  =new THREE.Mesh(new THREE.PlaneBufferGeometry(2,2,512,512),material)
+            mesh.rotation.x = - Math.PI/2;
+            gui.add(material.uniforms.uBigWavesElevation,'value').min(0).max(1).step(0.0001).name('uBigWavesElevation')
+            gui.add(material.uniforms.uBigWavesFrequency.value,'x').min(0).max(10).step(0.0001).name('uBigWavesFrequencyX')
+            gui.add(material.uniforms.uBigWavesFrequency.value,'y').min(0).max(10).step(0.0001).name('uBigWavesFrequencyY')
+            gui.add(material.uniforms.uBigWavesSpeed,'value').min(0).max(4).step(0.0001).name('uBigWavesSpeed')
+            
+            gui.add(material.uniforms.uSmallWavesElevation,'value').min(0).max(1).step(0.0001).name('uSmallWavesElevation')
+            gui.add(material.uniforms.uSmallWavesFrequency,'value').min(0).max(30).step(0.0001).name('uSmallWavesFrequency')
+            gui.add(material.uniforms.uSmallWavesSpeed,'value').min(0).max(4).step(0.0001).name('uSmallWavesSpeed')
+            gui.add(material.uniforms.uSmallWavesIterations,'value').min(0).max(5).step(0.0001).name('uSmallWavesIterations')
+            
 
 
+            gui.addColor(object,'depthColor').onChange(()=>material.uniforms.uDepthColor.value.set(object.depthColor)).name('depthColor')
+            gui.addColor(object,'surfaceColor').onChange(()=>material.uniforms.uSurfaceColor.value.set(object.surfaceColor)).name('surfaceColor')
+
+            
+            gui.add(material.uniforms.uColorOffset,'value').min(0).max(1).step(0.0001).name('uColorOffset')
+            gui.add(material.uniforms.uColorMultiplier,'value').min(0).max(10).step(0.0001).name('uColorMultiplier')
+            
+           
+            
+            scene.add(mesh);
        }
   
   
@@ -181,16 +195,11 @@ import React, { Component } from 'react'
        
     
          camera = new THREE.PerspectiveCamera(45,1,0.1,2000)
-         camera.position.x  =5
-         camera.position.y = 5
+         camera.position.x  =0
+         camera.position.y = 0
          camera.position.z = 5
          camera.lookAt(camera.position)
-
-
-         light = new THREE.DirectionalLight('white',1)
-         light.position.copy(camera.position)
-         scene.add(light);
-
+    
          group = new THREE.Group()
          scene.add(group)
     
@@ -212,12 +221,12 @@ import React, { Component } from 'react'
     
          renderer = new THREE.WebGLRenderer()
          renderer.setPixelRatio(width/height)
-         // renderer.setClearColor(0x00ff00,0.1)
+        //  renderer.setClearColor(0x00ff00,0.1)
          renderer.setSize(width,height)
          
          container.appendChild(renderer.domElement)
          controls = new OrbitControls(camera, renderer.domElement);
-         controls.update();
+     controls.update();
      }
     
       init()
@@ -233,7 +242,7 @@ import React, { Component } from 'react'
     }
         render() {
             return (
-                <div id="ShaderContainer">
+                <div id="RagingSeaContainer">
                   
                 </div>
             )

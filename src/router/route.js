@@ -13,6 +13,8 @@ import Physics from '../pages/Physics/Physics';
 import Module from '../pages/Module/Module';
 import Render from '../pages/Render/Render';
 import Shader from '../pages/Shader/Shader';
+import Pattern from '../pages/Pattern/Pattern';
+import RagingSea from '../pages/RagingSea/RagingSea';
 export const arr =[
     {to:"/",content:"首页",componment:Hello},
     {to:"/map",content:"地图",componment:ThreeMap},
@@ -29,4 +31,6 @@ export const arr =[
     {to:"/Module",content:"Module",componment:Module},
     {to:"/Render",content:"Render",componment:Render},
     {to:"/Shader",content:"Shader",componment:Shader},
+    {to:"/Pattern",content:"Pattern",componment:Pattern},
+    {to:"/RagingSea",content:"RagingSea",componment:RagingSea},
 ];

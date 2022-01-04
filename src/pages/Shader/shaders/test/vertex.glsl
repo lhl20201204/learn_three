@@ -13,7 +13,7 @@
       modelPosition.z += aRandom * 0.1;
       vec4 viewPosition = viewMatrix * modelPosition;
       vec4 projectionPosition = projectionMatrix * viewPosition;
-      
+       
      gl_Position =  projectionPosition;
      vRandom = aRandom;
  }

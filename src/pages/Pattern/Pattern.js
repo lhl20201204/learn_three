@@ -3,23 +3,21 @@ import React, { Component } from 'react'
     import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
     import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
     import {FontLoader} from "three/examples/jsm/loaders/FontLoader.js";
-    import "./Shader.css"
-    // import testVertexShader from './shaders/test/vertex.glsl'
-    // import testFragmentShader from './shaders/test/fragment.glsl'
-    import * as dat from 'dat.gui'
-    import testVertexShader2 from './shaders/test/vertex2.glsl'
-    import testFragmentShader2 from './shaders/test/fragment2.glsl'
-    export default class Shader extends Component {
+    import "./Pattern.css"
+    import testVertexShader from './shaders/vertex.glsl'
+    import testFragmentShader from './shaders/fragment.glsl'
+    
+    export default class Pattern extends Component {
     initThree(){
      let scene 
      let camera
      let renderer
      let group
-     let light
-     const MAP = './Earth.png'
-     const FLAG = './textures/textures/flag-french.jpg'
+     let plane
+     let planeMaterial 
+     let planeGeometry
      let resArray={
-        texture:[MAP,FLAG],
+        texture:[],
         gltf:[],
         font:[],
     }
@@ -30,13 +28,11 @@ import React, { Component } from 'react'
      {
          totalLoadedResNum+=resArray[attr].length
      }
-    let container = document.getElementById("ShaderContainer")
+    let container = document.getElementById("PatternContainer")
      let width = container.clientWidth
      let height = container.clientHeight
      let leave =false
      let controls
-     let material
-     const clock = new THREE.Clock()
      function leavePage(params) {
         leave = true
         let gContainer= document.querySelector(".dg.a")
@@ -47,12 +43,7 @@ import React, { Component } from 'react'
        }    
      }
      function render(params) {
-          const t = clock.getElapsedTime()
-          if(material)
-          { 
-              material.uniforms.uTime.value = t
-          }
-         
+    
          renderer.render(scene,camera)
      }
     
@@ -109,57 +100,15 @@ import React, { Component } from 'react'
        }
 
        function addComponents(resource) {
-        const geometry = new THREE.PlaneBufferGeometry(1,1,32,32)
-       const count = geometry.attributes.position.count
-       const randoms = new Float32Array(count)
-       for(let i=0;i<count;i++)
-       {
-          randoms[i] = Math.random()
+            planeGeometry = new THREE.PlaneBufferGeometry(1,1,32,32)
+            planeMaterial = new THREE.ShaderMaterial({
+                vertexShader:testVertexShader,
+                fragmentShader:testFragmentShader,
+                side:THREE.DoubleSide
+            })
+           plane = new THREE.Mesh(planeGeometry,planeMaterial)
+           scene.add(plane)
 
-       }
-
-
-       geometry.setAttribute('aRandom',new THREE.BufferAttribute(randoms,1))
-
-
-        const gui = new dat.GUI()
-         material = new THREE.ShaderMaterial({
-            vertexShader:testVertexShader2,
-            fragmentShader:testFragmentShader2,
-            side:THREE.DoubleSide,
-            uniforms:{
-                uFrequency:{
-                    type:  'vec2',
-                    value: new THREE.Vector2(10,5),
-                },
-                uTime: {
-                    value: 0
-                },
-                uColor:{
-                    value: new THREE.Color('orange')
-                },
-                uTexture:{
-                    value:resource[FLAG]
-                }
-            }
-
-        })
-        gui.add(material.uniforms.uFrequency.value, 'x' ).min(0).max(20).step(0.01).name('frequencyX')
-        gui.add(material.uniforms.uFrequency.value, 'y' ).min(0).max(20).step(0.01).name('frequencyY')
-        const material2 = new THREE.MeshStandardMaterial({
-            roughness:0.5,
-            side:THREE.DoubleSide,
-            map: resource[MAP]
-        })
-
-        const plane = new THREE.Mesh(geometry,true?material:material2)
-        // plane.rotation.x = -Math.PI/ 2
-         plane.scale.y = 2 /3;
-        scene.add(plane);
-
-       
-
-  
 
 
        }
@@ -181,16 +130,11 @@ import React, { Component } from 'react'
        
     
          camera = new THREE.PerspectiveCamera(45,1,0.1,2000)
-         camera.position.x  =5
-         camera.position.y = 5
-         camera.position.z = 5
+         camera.position.x  =0
+         camera.position.y = 0
+         camera.position.z = 4
          camera.lookAt(camera.position)
-
-
-         light = new THREE.DirectionalLight('white',1)
-         light.position.copy(camera.position)
-         scene.add(light);
-
+    
          group = new THREE.Group()
          scene.add(group)
     
@@ -212,12 +156,12 @@ import React, { Component } from 'react'
     
          renderer = new THREE.WebGLRenderer()
          renderer.setPixelRatio(width/height)
-         // renderer.setClearColor(0x00ff00,0.1)
+        //  renderer.setClearColor(0x00ff00,0.1)
          renderer.setSize(width,height)
          
          container.appendChild(renderer.domElement)
          controls = new OrbitControls(camera, renderer.domElement);
-         controls.update();
+     controls.update();
      }
     
       init()
@@ -233,7 +177,7 @@ import React, { Component } from 'react'
     }
         render() {
             return (
-                <div id="ShaderContainer">
+                <div id="PatternContainer">
                   
                 </div>
             )
