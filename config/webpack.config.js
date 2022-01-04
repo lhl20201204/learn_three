@@ -378,6 +378,18 @@ module.exports = function (webpackEnv) {
                 name: 'static/media/[name].[hash:8].[ext]',
               },
             },
+            
+
+            {
+                test:/\.(glsl|vs|fs|vert|frag)$/,
+                exclude: /node_modules/,
+                use:[
+                  'raw-loader'
+                ]
+            },
+
+
+
             // "url" loader works like "file" loader except that it embeds assets
             // smaller than specified limit in bytes as data URLs to avoid requests.
             // A missing `test` is equivalent to a match.

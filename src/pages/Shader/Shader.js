@@ -6,7 +6,9 @@ import React, { Component } from 'react'
     import "./Shader.css"
     import testVertexShader from './shaders/test/vertex.glsl'
     import testFragmentShader from './shaders/test/fragment.glsl'
-
+    import * as dat from 'dat.gui'
+    import testVertexShader2 from './shaders/test/vertex2.glsl'
+    import testFragmentShader2 from './shaders/test/fragment2.glsl'
     export default class Shader extends Component {
     initThree(){
      let scene 
@@ -15,8 +17,9 @@ import React, { Component } from 'react'
      let group
      let light
      const MAP = './Earth.png'
+     const FLAG = './textures/textures/flag-french.jpg'
      let resArray={
-        texture:[MAP],
+        texture:[MAP,FLAG],
         gltf:[],
         font:[],
     }
@@ -32,6 +35,8 @@ import React, { Component } from 'react'
      let height = container.clientHeight
      let leave =false
      let controls
+     let material
+     const clock = new THREE.Clock()
      function leavePage(params) {
         leave = true
         let gContainer= document.querySelector(".dg.a")
@@ -42,7 +47,12 @@ import React, { Component } from 'react'
        }    
      }
      function render(params) {
-    
+          const t = clock.getElapsedTime()
+          if(material)
+          { 
+              material.uniforms.uTime.value = t
+          }
+         
          renderer.render(scene,camera)
      }
     
@@ -99,48 +109,54 @@ import React, { Component } from 'react'
        }
 
        function addComponents(resource) {
+        const geometry = new THREE.PlaneBufferGeometry(1,1,32,32)
+       const count = geometry.attributes.position.count
+       const randoms = new Float32Array(count)
+       for(let i=0;i<count;i++)
+       {
+          randoms[i] = Math.random()
+
+       }
+
+
+       geometry.setAttribute('aRandom',new THREE.BufferAttribute(randoms,1))
+
+
+        const gui = new dat.GUI()
+
         
-        const material = new THREE.RawShaderMaterial({
-            vertexShader:`
-               uniform mat4 projectionMatrix;
-               uniform mat4 viewMatrix;
-               uniform mat4 modelMatrix;
-
-
-               attribute vec3 position;
-
-               void main()
-               {
-                   gl_Position = projectionMatrix * viewMatrix * modelMatrix *vec4(position,1.0);
-
-
-               }
-            
-            
-            
-            `,
-            fragmentShader:`
-              precision mediump float;
-
-
-              void main()
-              {
-                  gl_FragColor =vec4(1.0,0.0,0.0,1.0);
-              }
-        
-            `
+         material = new THREE.RawShaderMaterial({
+            vertexShader:testVertexShader2,
+            fragmentShader:testFragmentShader2,
+            side:THREE.DoubleSide,
+            uniforms:{
+                uFrequency:{
+                    type:  'vec2',
+                    value: new THREE.Vector2(10,5),
+                },
+                uTime: {
+                    value: 0
+                },
+                uColor:{
+                    value: new THREE.Color('orange')
+                },
+                uTexture:{
+                    value:resource[FLAG]
+                }
+            }
 
         })
-
+        gui.add(material.uniforms.uFrequency.value, 'x' ).min(0).max(20).step(0.01).name('frequencyX')
+        gui.add(material.uniforms.uFrequency.value, 'y' ).min(0).max(20).step(0.01).name('frequencyY')
         const material2 = new THREE.MeshStandardMaterial({
             roughness:0.5,
             side:THREE.DoubleSide,
             map: resource[MAP]
         })
 
-        const plane = new THREE.Mesh(new THREE.PlaneBufferGeometry(1,1),true?material:material2)
-        plane.rotation.x = -Math.PI/ 2
-
+        const plane = new THREE.Mesh(geometry,true?material:material2)
+        // plane.rotation.x = -Math.PI/ 2
+         plane.scale.y = 2 /3;
         scene.add(plane);
 
        
