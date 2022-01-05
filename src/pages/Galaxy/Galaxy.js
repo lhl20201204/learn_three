@@ -181,7 +181,7 @@ import testVertexShader from './shaders/vertex.glsl'
               geometry.setAttribute('position',new THREE.BufferAttribute(positions,3))
               geometry.setAttribute('color',new THREE.BufferAttribute(colors,3))
               geometry.setAttribute('aScale',new THREE.BufferAttribute(scales,1))
-              geometry.setAttribute('aRandom',new THREE.BufferAttribute(randomness,3))
+            //   geometry.setAttribute('aRandomness',new THREE.BufferAttribute(randomness,3))
                material  = new THREE.ShaderMaterial({
                 //   size:parameters.size,
                 //   sizeAttenuation:false,
