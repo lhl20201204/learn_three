@@ -6,10 +6,77 @@ import axios from 'axios'
 function Hello() {
    const [text,setText] = useState('')
     useEffect(() => {
-        setTimeout(()=>{
-            //console.log(withRouter)
-        //history.push('/map')
-        },2000)
+        const videoSource = document.getElementById('videoSource');
+        const video = document.getElementById('video');
+        video.muted = true
+const start = document.getElementById('start');
+const stop = document.getElementById('stop');
+const download = document.getElementById('download');
+
+
+const displayMediaOptions = {
+video: true,
+audio: true
+}
+console.log(start)
+start.addEventListener('click',function(evt){
+startCapture();
+},false)
+
+stop.addEventListener('click',function(evt){
+stopCapture();
+},false)
+
+download.addEventListener('click',function(evt){
+mydownload();
+},false)
+
+
+let recorder;
+function startCapture() {
+
+navigator.mediaDevices.getDisplayMedia(displayMediaOptions).then(captureStream => {
+window.URL.revokeObjectURL(video.src);
+video.srcObject = captureStream;
+recorder = new MediaRecorder(captureStream);
+recorder.start();
+    });
+
+// 删除原来的blob 
+}
+
+function stopCapture() {
+let tracks = video.srcObject.getTracks();
+tracks.forEach(track => {
+    track.stop();
+});
+recorder.stop();
+recorder.addEventListener('dataavailable',(event)=>{
+    let videoUrl = URL.createObjectURL(event.data, {type:'video/mp4'});
+    console.log('加载',videoUrl)
+    video.srcObject = null;
+    videoSource.src = videoUrl
+    video.src = videoUrl;
+})
+
+}
+
+function mydownload(){
+const name = new Date().toISOString().slice(0,19).replace('T',' ').replace(' ','_').replace(/:/g,'-');
+const a = document.createElement('a');
+a.href = video.src;
+a.download = `我的录制视频${name}.mp4`;
+document.body.appendChild(a);
+a.click();
+
+}
+
+ 
+
+
+
+
+
         return () => {
             
         }
@@ -44,8 +111,7 @@ function Hello() {
 
     }
 
- 
-
+    
     return (
         <div>
            请输入你要创建的类名,在pages帮你创建目录以及类以及在router/route自动帮你配制路由<input onChange={(v)=>{
@@ -54,7 +120,16 @@ function Hello() {
            <br/>
            <button onClick={write()}>确定</button>
            <br/>
-              
+           <video id="video" style={{
+               width:"500px",
+                height:"400px",
+           }} autoPlay controls>
+        <source id="videoSource"
+        type="video/mp4" />
+      </video>
+ <button id="start">start </button>
+<button id="stop">stop </button>
+   <button id="download"> download</button> 
         </div>
     )
 }
